@@ -87,6 +87,52 @@ def gen_input_rand(img, skg, seg, size_min=40, size_max=60, num_patch=1):
         results[i, :, :, :] = res
     return results, texture_info
 
+
+def gen_input_exact(img, skg, seg, x=0, y=0, size_min=40, size_max=60):
+    # generate input skg with random patch from img
+    # input img,skg [bsx3xwxh], xcenter,ycenter, size
+    # output bsx5xwxh
+
+    bs, c, w, h = img.size()
+    results = torch.Tensor(bs, 5, w, h)
+    texture_info = []
+
+    if x == 0:
+      x=w/2
+    if y == 0:
+      y=h/2
+
+    # text_info.append([xcenter,ycenter,crop_size])
+    seg = seg / torch.max(seg) #make sure it's 0/1
+    
+    seg[:,0:int(math.ceil(size_min/2)),:] = 0
+    seg[:,:,0:int(math.ceil(size_min/2))] = 0
+    seg[:,:,int(math.floor(h-size_min/2)):h] = 0
+    seg[:,int(math.floor(w-size_min/2)):w,:] = 0
+    
+    counter = 0
+    for i in range(bs):
+        counter = 0
+        ini_texture = torch.ones(img[0].size()) * (1)
+        ini_mask = torch.ones((1, w, h)) * (-1)
+        temp_info = []
+        
+        crop_size = int(rand_between(size_min, size_max))
+        
+        seg_index_size = seg[i,:,:].view(-1).size()[0]
+        seg_index = torch.arange(0,seg_index_size)
+        seg_one = seg_index[seg[i,:,:].view(-1)==1]
+        
+        temp_info.append([x, y, crop_size])
+        res = gen_input(img[i], skg[i], ini_texture, ini_mask, x, y, crop_size)
+
+        ini_texture = res[1:4, :, :]
+
+        texture_info.append(temp_info)
+        results[i, :, :, :] = res
+    return results, texture_info
+
+
 def gen_local_patch(patch_size, batch_size, eroded_seg, seg, img):
     # generate local loss patch from eroded segmentation
     
