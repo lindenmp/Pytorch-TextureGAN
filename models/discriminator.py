@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.legacy as legacy
+# import torch.legacy as legacy
 import numpy as np
 
 
