@@ -33,12 +33,13 @@ def make_dataset(directory, opt, erode_seg=True):
     seg = glob.glob(osp.join(directory, opt + '_seg/*/*.jpg'))
     seg = sorted(seg)
     txt = glob.glob(osp.join(directory, opt + '_txt/*/*.jpg'))
+    txt = sorted(txt)
     #txt = glob.glob(osp.join(directory, opt + '_dtd_txt/*/*.jpg'))
     extended_txt = []
     #import pdb; pdb.set_trace()
     for i in range(len(skg)):
         extended_txt.append(txt[i%len(txt)])
-    random.shuffle(extended_txt)
+    # random.shuffle(extended_txt)
     
 
     if erode_seg:
