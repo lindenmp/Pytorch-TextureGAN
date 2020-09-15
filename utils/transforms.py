@@ -394,6 +394,22 @@ class RandomSizedCrop(object):
         return crop(scale(imgs))
 
 
+class ReturnImg(object):
 
-   
+    def __call__(self, imgs):
+
+        return imgs
+
+
+class ScaleImg(object):
+
+    def __init__(self, size, interpolation=Image.BILINEAR):
+        self.size = size
+        self.interpolation = interpolation
+
+    def __call__(self, imgs):
+
+        # Fallback
+        scale = Scale(self.size, interpolation=self.interpolation)
+        return scale(imgs)
     
