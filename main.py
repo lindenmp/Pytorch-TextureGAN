@@ -19,9 +19,9 @@ import argparser
 def get_transforms(args):
     transforms_list = [
         custom_transforms.RandomSizedCrop(args.image_size, args.resize_min, args.resize_max),
-        custom_transforms.RandomHorizontalFlip(),
+        # custom_transforms.RandomHorizontalFlip(),
         # custom_transforms.ScaleImg(args.image_size),
-        # custom_transforms.ReturnImg(),
+        custom_transforms.ReturnImg(),
         custom_transforms.toTensor()
     ]
     if args.color_space == 'lab':
